@@ -22,6 +22,7 @@ async def entrypoint(ctx):
         vad=silero.VAD.load(),
 )
     await session.start(agent=IntroAgent(), room=ctx.room)
+    await session.say("Hello! Welcome to this mock interview. Let's start with a self-introduction. Could you tell me a little about yourself?")
 
 if __name__ == "__main__":
     cli.run_app(WorkerOptions(entrypoint_fnc=entrypoint))
