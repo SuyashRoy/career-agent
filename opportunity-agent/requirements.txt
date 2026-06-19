@@ -1,0 +1,7 @@
+# langraph, pip install langgraph --no-cache-dir
+playwright
+beautifulsoup4
+pydantic
+groq
+python-dotenv
+requests
