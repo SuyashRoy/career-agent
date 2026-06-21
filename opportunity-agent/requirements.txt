@@ -1,4 +1,4 @@
-# langraph, pip install langgraph --no-cache-dir
+langgraph
 playwright
 beautifulsoup4
 pydantic
