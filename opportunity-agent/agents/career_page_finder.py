@@ -1,15 +1,21 @@
 """Given a company website URL, find the careers page."""
-import os
 import re
+import sys
+from pathlib import Path
 from urllib.parse import urljoin
+
+_AGENT_ROOT = Path(__file__).parent.parent        # opportunity-agent/
+_REPO_ROOT = Path(__file__).parent.parent.parent  # career-agent/
+for _p in (_AGENT_ROOT, _REPO_ROOT):
+    if str(_p) not in sys.path:
+        sys.path.insert(0, str(_p))
 
 import requests
 from bs4 import BeautifulSoup
-from dotenv import load_dotenv
 from groq import Groq
 from playwright.sync_api import sync_playwright
 
-load_dotenv()
+from shared.config import get_groq_api_key
 
 _HEADERS = {
     "User-Agent": (
@@ -102,7 +108,7 @@ def _get_homepage_links(url: str) -> list[tuple[str, str]]:
 
 def _llm_identify_career_url(company_name: str, company_url: str, links_text: str) -> str:
     try:
-        client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+        client = Groq(api_key=get_groq_api_key())
         response = client.chat.completions.create(
             model="llama-3.3-70b-versatile",
             messages=[

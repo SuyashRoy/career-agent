@@ -1,0 +1,18 @@
+# ── interview-agent ────────────────────────────────────────────────────────────
+livekit-agents[openai,deepgram,silero,cartesia]~=1.0
+openai~=1.0
+deepgram-sdk~=1.0
+silero-vad>=6.1.0,<7.0.0
+cartesia~=1.0
+
+# ── opportunity-agent ──────────────────────────────────────────────────────────
+langgraph
+playwright
+beautifulsoup4
+pydantic
+groq
+requests
+googlesearch-python
+
+# ── shared ─────────────────────────────────────────────────────────────────────
+python-dotenv

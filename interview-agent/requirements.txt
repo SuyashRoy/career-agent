@@ -1,6 +1,0 @@
-livekit-agents[openai,deepgram,silero,cartesia]~=1.0
-python-dotenv
-openai~=1.0
-deepgram-sdk~=1.0
-silero-vad>=6.1.0,<7.0.0
-cartesia~=1.0

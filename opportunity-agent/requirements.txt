@@ -1,8 +1,0 @@
-langgraph
-playwright
-beautifulsoup4
-pydantic
-groq
-python-dotenv
-requests
-googlesearch-python

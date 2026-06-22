@@ -1,23 +1,25 @@
 """Given a LinkedIn job URL, return company name + company website URL."""
 import json
-import os
 import re
 import sys
 from pathlib import Path
 from typing import List
 
-# Allow running this file directly: `python agents/linkedin_extractor.py`
-sys.path.insert(0, str(Path(__file__).parent.parent))
+# Ensure both opportunity-agent/ (for models) and career-agent/ (for shared) are on the path
+# when this file is run directly from any working directory.
+_AGENT_ROOT = Path(__file__).parent.parent        # opportunity-agent/
+_REPO_ROOT = Path(__file__).parent.parent.parent  # career-agent/
+for _p in (_AGENT_ROOT, _REPO_ROOT):
+    if str(_p) not in sys.path:
+        sys.path.insert(0, str(_p))
 
 import requests
 from bs4 import BeautifulSoup
-from dotenv import load_dotenv
 from groq import Groq
 from playwright.sync_api import sync_playwright
 
 from models.schemas import JobSourceOutput
-
-load_dotenv()
+from shared.config import get_groq_api_key
 
 _HEADERS = {
     "User-Agent": (
@@ -113,7 +115,7 @@ def _parse_company_info(html: str) -> tuple[str, str]:
 def _llm_get_website(company_name: str) -> str:
     """Ask Groq to return the company's official homepage URL."""
     try:
-        client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+        client = Groq(api_key=get_groq_api_key())
         response = client.chat.completions.create(
             model="llama-3.1-8b-instant",
             messages=[

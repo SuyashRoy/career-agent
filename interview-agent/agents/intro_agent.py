@@ -11,6 +11,7 @@ class IntroAgent(Agent):
         self._start = None
         self._done = False
         self._user_spoke = False
+        self._ready_to_wrap = False
 
     async def on_enter(self):
         self._start = time.time()
@@ -28,11 +29,19 @@ class IntroAgent(Agent):
     async def _watchdog(self):
         await asyncio.sleep(INTRO_TIMEOUT)
         if not self._done:
-            self._done = True
-            self.session.update_agent(ExperienceAgent())
+            self._ready_to_wrap = True
+            await self.session.say(
+                "We're running close on time for introductions. "
+                "Please finish your current thought, and then we'll "
+                "move on to discussing your experience."
+            )
+            await asyncio.sleep(30) ### Hard cutoff grace period, if still here after 30s, force transition
+            if not self._done:
+                self._done = True
+                self.session.update_agent(ExperienceAgent())
 
     @function_tool
-    async def transition_to_experience(self):
+    async def transition_to_experience(self, confirmation: str = "yes"):
         """Call when candidate has completed intro."""
         self._done = True
         self.session.update_agent(ExperienceAgent())

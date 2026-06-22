@@ -1,15 +1,21 @@
 """Given a careers page URL, extract one active job posting URL."""
-import os
 import re
+import sys
+from pathlib import Path
 from urllib.parse import urljoin, urlparse
+
+_AGENT_ROOT = Path(__file__).parent.parent        # opportunity-agent/
+_REPO_ROOT = Path(__file__).parent.parent.parent  # career-agent/
+for _p in (_AGENT_ROOT, _REPO_ROOT):
+    if str(_p) not in sys.path:
+        sys.path.insert(0, str(_p))
 
 import requests
 from bs4 import BeautifulSoup
-from dotenv import load_dotenv
 from groq import Groq
 from playwright.sync_api import sync_playwright
 
-load_dotenv()
+from shared.config import get_groq_api_key
 
 _HEADERS = {
     "User-Agent": (
@@ -136,7 +142,7 @@ def _llm_extract_job(html: str, career_url: str) -> str:
                 links.append(f"- {text} -> {href}")
 
         links_text = "\n".join(links[:80])
-        client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+        client = Groq(api_key=get_groq_api_key())
         response = client.chat.completions.create(
             model="llama-3.3-70b-versatile",
             messages=[

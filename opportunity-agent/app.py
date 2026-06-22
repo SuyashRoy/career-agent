@@ -2,17 +2,21 @@
 Opportunity Discovery Agent — LangGraph workflow
 LinkedIn URL → company name + career page URL + open position URL
 """
+import sys
+from pathlib import Path
 from typing import List
 
-from dotenv import load_dotenv
+# Add career-agent/ to path so shared/ is importable when running from this directory
+_REPO_ROOT = Path(__file__).parent.parent
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
+
 from langgraph.graph import StateGraph, END
 
 from agents.career_page_finder import find_career_page, _google_search_career_page
 from agents.job_extractor import extract_job_url
 from agents.linkedin_extractor import extract_company_info
 from models.schemas import JobSourceOutput, JobSourceState
-
-load_dotenv()
 
 
 # ── LangGraph nodes ────────────────────────────────────────────────────────────
