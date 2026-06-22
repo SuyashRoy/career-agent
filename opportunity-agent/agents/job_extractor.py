@@ -1,10 +1,15 @@
 """Given a careers page URL, extract one active job posting URL."""
+import os
 import re
 from urllib.parse import urljoin, urlparse
 
 import requests
 from bs4 import BeautifulSoup
+from dotenv import load_dotenv
+from groq import Groq
 from playwright.sync_api import sync_playwright
+
+load_dotenv()
 
 _HEADERS = {
     "User-Agent": (
@@ -119,6 +124,45 @@ def _find_job_in_ats(ats_url: str) -> str:
     return ""
 
 
+def _llm_extract_job(html: str, career_url: str) -> str:
+    """Use LLM to identify a job URL when regex patterns find nothing."""
+    try:
+        soup = BeautifulSoup(html, "html.parser")
+        links = []
+        for a in soup.find_all("a", href=True):
+            text = a.get_text(strip=True)
+            href = urljoin(career_url, a["href"])
+            if text and href.startswith("http"):
+                links.append(f"- {text} -> {href}")
+
+        links_text = "\n".join(links[:80])
+        client = Groq(api_key=os.getenv("GROQ_API_KEY"))
+        response = client.chat.completions.create(
+            model="llama-3.3-70b-versatile",
+            messages=[
+                {
+                    "role": "user",
+                    "content": (
+                        f"Career page: {career_url}\n\n"
+                        "These are all links from the career page:\n\n"
+                        f"{links_text}\n\n"
+                        "Identify ONE link that points to a specific job posting "
+                        "(not a category or department page). "
+                        "Return ONLY the URL. If none found, return NONE."
+                    ),
+                }
+            ],
+            max_tokens=100,
+        )
+        raw = response.choices[0].message.content.strip()
+        if "none" in raw.lower() and len(raw) < 20:
+            return ""
+        m = re.search(r"https?://[^\s,;\"'<>]+", raw)
+        return m.group(0).rstrip(".,)") if m else ""
+    except Exception:
+        return ""
+
+
 def extract_job_url(career_page_url: str) -> str:
     if not career_page_url:
         return ""
@@ -158,6 +202,11 @@ def extract_job_url(career_page_url: str) -> str:
         job = _find_job_in_ats(ats_url)
         if job:
             return job
+
+    # LLM fallback for non-standard career page structures
+    llm_job = _llm_extract_job(html, career_page_url)
+    if llm_job:
+        return llm_job
 
     # Last resort: return ATS landing page itself
     if ats_landing_pages:

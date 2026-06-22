@@ -7,6 +7,7 @@ import requests
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 from groq import Groq
+from playwright.sync_api import sync_playwright
 
 load_dotenv()
 
@@ -47,8 +48,8 @@ def _check_url(url: str) -> bool:
     return False
 
 
-def _get_homepage_links(url: str) -> list[tuple[str, str]]:
-    """Return [(link_text, absolute_href), ...] from the homepage."""
+def _get_homepage_links_requests(url: str) -> list[tuple[str, str]]:
+    """Fast path: fetch homepage with requests and parse static links."""
     try:
         resp = requests.get(url, headers=_HEADERS, timeout=10, allow_redirects=True)
         if not resp.ok:
@@ -65,30 +66,97 @@ def _get_homepage_links(url: str) -> list[tuple[str, str]]:
         return []
 
 
+def _get_homepage_links_playwright(url: str) -> list[tuple[str, str]]:
+    """Load page with Playwright to capture JS-rendered navigation links."""
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        page = browser.new_page()
+        page.set_extra_http_headers(_HEADERS)
+        try:
+            page.goto(url, wait_until="networkidle", timeout=15000)
+            page.wait_for_timeout(2000)
+            links_data = page.evaluate("""
+                () => Array.from(document.querySelectorAll('a'))
+                    .map(a => ({
+                        text: a.innerText.trim().toLowerCase(),
+                        href: a.href
+                    }))
+                    .filter(l => l.text && l.href && l.href.startsWith('http'))
+            """)
+            return [(l["text"], l["href"]) for l in links_data]
+        except Exception:
+            return []
+        finally:
+            browser.close()
+
+
+def _get_homepage_links(url: str) -> list[tuple[str, str]]:
+    """Try requests first; fall back to Playwright if too few links returned."""
+    links = _get_homepage_links_requests(url)
+    if len(links) < 5:
+        playwright_links = _get_homepage_links_playwright(url)
+        if playwright_links:
+            return playwright_links
+    return links
+
+
 def _llm_identify_career_url(company_name: str, company_url: str, links_text: str) -> str:
     try:
         client = Groq(api_key=os.getenv("GROQ_API_KEY"))
         response = client.chat.completions.create(
-            model="llama-3.1-8b-instant",
+            model="llama-3.3-70b-versatile",
             messages=[
+                {
+                    "role": "system",
+                    "content": (
+                        "You are a web navigation agent. Your task is to identify "
+                        "which link on a company's website leads to their careers "
+                        "or jobs page. Analyze the link text and URL patterns to "
+                        "make your decision."
+                    ),
+                },
                 {
                     "role": "user",
                     "content": (
-                        f"Company: {company_name}\nHomepage: {company_url}\n\n"
-                        "From the following links scraped from the company homepage, "
-                        "identify which URL leads to their careers or jobs page. "
-                        "Return ONLY the URL, nothing else.\n\n"
-                        f"Links:\n{links_text}"
+                        f"Company: {company_name}\n"
+                        f"Homepage: {company_url}\n\n"
+                        "Here are all the links found on this page:\n\n"
+                        f"{links_text}\n\n"
+                        "Which link leads to the careers/jobs page?\n\n"
+                        "Think step by step:\n"
+                        "1. Which links have career-related text (careers, jobs, "
+                        "join us, hiring, open positions, work with us)?\n"
+                        "2. Which links have career-related URL patterns "
+                        "(/careers, /jobs, /join)?\n"
+                        "3. If multiple candidates exist, which is most likely "
+                        "the main careers page (not a specific job listing)?\n\n"
+                        "After your reasoning, output ONLY the URL on the final "
+                        "line. If no careers link exists, output NONE."
                     ),
-                }
+                },
             ],
-            max_tokens=100,
+            max_tokens=300,
         )
         raw = response.choices[0].message.content.strip()
-        m = re.search(r"https?://[^\s,;\"'<>]+", raw)
-        return m.group(0).rstrip(".,)") if m else ""
+        # Take the last URL found (after any chain-of-thought reasoning)
+        urls = re.findall(r"https?://[^\s,;\"'<>]+", raw)
+        return urls[-1].rstrip(".,)") if urls else ""
     except Exception:
         return ""
+
+
+def _google_search_career_page(company_name: str) -> str:
+    """Search Google for the company's career page as a last resort."""
+    try:
+        from googlesearch import search as gsearch
+        query = f"{company_name} careers jobs page"
+        for result_url in gsearch(query, num_results=5):
+            lower = result_url.lower()
+            if any(kw in lower for kw in ("career", "jobs", "hiring", "join")):
+                return result_url
+    except Exception:
+        pass
+    return ""
 
 
 def find_career_page(company_name: str, company_website: str) -> str:
@@ -113,14 +181,15 @@ def find_career_page(company_name: str, company_website: str) -> str:
         if any(kw in text for kw in _CAREER_KEYWORDS):
             return href
 
-    # Strategy 3: LLM picks from scanned links
+    # Strategy 3: LLM agent reasons over the full link list
     if links:
         snippet = "\n".join(f"{text} -> {href}" for text, href in links[:60])
         result = _llm_identify_career_url(company_name, company_website, snippet)
         if result and result.rstrip("/") != base_normalized:
             return result
 
-    return ""
+    # Strategy 4: Google search fallback
+    return _google_search_career_page(company_name)
 
 
 if __name__ == "__main__":

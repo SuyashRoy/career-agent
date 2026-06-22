@@ -134,6 +134,23 @@ def _llm_get_website(company_name: str) -> str:
         return ""
 
 
+def _google_search_website(company_name: str) -> str:
+    """Search Google for the company's official website."""
+    try:
+        from googlesearch import search as gsearch
+        query = f"{company_name} official website"
+        skip = (
+            "linkedin.com", "glassdoor", "indeed.com", "facebook.com",
+            "twitter.com", "instagram.com", "crunchbase.com",
+        )
+        for result_url in gsearch(query, num_results=5):
+            if not any(s in result_url.lower() for s in skip):
+                return result_url
+    except Exception:
+        pass
+    return ""
+
+
 def _guess_company_website(company_name: str) -> str:
     """Fallback: probe common domain patterns and verify the page belongs to the company."""
     slug = re.sub(r"[^a-z0-9]", "", company_name.lower())
@@ -185,6 +202,8 @@ def extract_company_info(linkedin_job_url: str) -> tuple[str, str]:
                         company_website = candidate
             except requests.RequestException:
                 pass
+    if company_name and not company_website:
+        company_website = _google_search_website(company_name)
     if company_name and not company_website:
         company_website = _guess_company_website(company_name)
 
