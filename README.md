@@ -50,6 +50,8 @@ A real-time voice AI that conducts structured mock interviews with multi-stage p
 
 **How it works:** You join a LiveKit room and start talking. The Intro Agent handles greetings and rapport. When the conversation naturally shifts to experience, the LLM triggers a function tool that hands off to the Experience Agent — same session, no interruption. If you go silent for 4 minutes, a timeout fallback ensures the interview always progresses.
 
+![Architecture](docs/diagrams/interview-agent_v1.png)
+
 **The hard problem it solves:** Agent-to-agent handoff in voice AI is poorly documented. LiveKit v1.6.0's `AgentHandoff` API is broken. We use synchronous `session.update_agent()` with function tool triggers — the LLM decides when to transition, and the framework executes it cleanly.
 
 | Capability | Implementation |
@@ -69,6 +71,8 @@ A real-time voice AI that conducts structured mock interviews with multi-stage p
 An autonomous web agent that takes a LinkedIn job URL and returns structured data: company name, career page URL, and an open position link — navigating JavaScript-heavy sites, ATS platforms, and non-standard layouts without human input.
 
 **How it works:** A LangGraph state machine runs three sequential nodes. Each node implements a multi-strategy fallback chain: fast deterministic methods first (URL patterns, regex, meta-tags), then Playwright-based heuristics, then LLM reasoning as a safety net. The agent is fast when the answer is obvious and intelligent when it isn't.
+
+![Architecture](docs/diagrams/opportunity-agent-v2.png)
 
 **The hard problem it solves:** Company career pages have no standard structure. Some are at `/careers`. Some are buried behind JS-rendered navigation. Some redirect to Greenhouse or Lever with unpredictable URLs. Pure scraping breaks. Pure LLM hallucinates. The layered approach handles both.
 
