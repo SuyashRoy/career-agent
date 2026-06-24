@@ -1,0 +1,39 @@
+Machine Learning Engineer (ML Engineer)
+
+Job Summary:
+We are seeking a Machine Learning Engineer to design, develop, deploy, and maintain scalable machine learning systems that power intelligent products and business solutions. 
+The ideal candidate combines strong software engineering skills with expertise in machine learning algorithms, data processing, and model deployment.
+
+Key Responsibilities:
+Design and develop machine learning models for prediction, classification, recommendation, and optimization tasks.
+Build scalable data pipelines for model training and inference.
+Deploy ML models into production environments and monitor performance.
+Collaborate with Data Scientists, AI Engineers, and Product Managers to translate business requirements into ML solutions.
+Optimize model performance, latency, and scalability.
+Implement MLOps best practices, including CI/CD, model versioning, and monitoring.
+Conduct experimentation and A/B testing to improve model effectiveness.
+Ensure data quality, model reliability, and compliance with security standards.
+
+Required Qualifications:
+Bachelor's or Master's degree in Computer Science, Machine Learning, Artificial Intelligence, or related field.
+3+ years of experience developing machine learning solutions.
+Strong programming skills in Python.
+Experience with machine learning frameworks such as TensorFlow, PyTorch, or Scikit-learn.
+Experience with cloud platforms (AWS, Azure, or GCP).
+Knowledge of software engineering principles, APIs, and microservices architecture.
+Familiarity with Docker, Kubernetes, and CI/CD pipelines.
+
+Preferred Qualifications:
+Experience with MLOps platforms.
+Experience deploying LLMs and generative AI applications.
+Knowledge of distributed computing frameworks such as Spark.
+
+Key Skills:
+Machine Learning
+Deep Learning
+MLOps
+Python
+TensorFlow / PyTorch
+Data Engineering
+Cloud Computing
+Model Deployment

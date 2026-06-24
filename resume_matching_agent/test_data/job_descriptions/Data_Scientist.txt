@@ -1,0 +1,37 @@
+Data Scientist
+
+Job Summary:
+We are looking for a Data Scientist to analyze large datasets, uncover actionable insights, and develop predictive models that support strategic decision-making. 
+The ideal candidate is highly analytical, business-oriented, and skilled in statistical modeling and experimentation.
+
+Key Responsibilities:
+Analyze structured and unstructured data to identify trends and opportunities.
+Build predictive and statistical models to solve business problems.
+Design and evaluate experiments and A/B tests.
+Develop dashboards and reports to communicate insights to stakeholders.
+Collaborate with business teams to define success metrics and KPIs.
+Clean, validate, and transform data from multiple sources.
+Present findings and recommendations to technical and non-technical audiences.
+
+Required Qualifications:
+Bachelor's or Master's degree in Data Science, Statistics, Mathematics, Computer Science, or related field.
+2+ years of experience in data science or analytics.
+Strong knowledge of statistics, probability, and machine learning.
+Proficiency in Python and SQL.
+Experience with data visualization tools such as Tableau or Power BI.
+Ability to communicate complex findings clearly.
+
+Preferred Qualifications:
+Experience in experimentation and causal inference.
+Knowledge of cloud-based analytics platforms.
+Experience working with large-scale datasets.
+
+Key Skills:
+Statistical Analysis
+Machine Learning
+Python
+SQL
+Data Visualization
+Experimentation
+Predictive Modeling
+Business Analytics

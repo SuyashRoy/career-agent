@@ -1,0 +1,36 @@
+Frontend Developer
+
+Job Summary:
+We are looking for a Frontend Developer to build responsive, user-friendly web applications and interfaces. 
+The ideal candidate is passionate about creating exceptional user experiences and writing clean, maintainable code.
+
+Key Responsibilities:
+Develop and maintain web applications using modern frontend frameworks.
+Translate UI/UX designs into responsive, accessible interfaces.
+Optimize applications for performance and scalability.
+Collaborate with backend developers, designers, and product teams.
+Write reusable, testable, and maintainable code.
+Ensure cross-browser and cross-device compatibility.
+Participate in code reviews and technical discussions.
+
+Required Qualifications:
+Bachelor's degree in Computer Science or equivalent practical experience.
+2+ years of frontend development experience.
+Strong proficiency in HTML, CSS, and JavaScript/TypeScript.
+Experience with React, Vue, or Angular.
+Familiarity with REST APIs and frontend state management.
+
+Preferred Qualifications:
+Experience with Next.js or similar frameworks.
+Knowledge of accessibility standards and web performance optimization.
+Experience with testing frameworks and CI/CD pipelines.
+
+Key Skills:
+React
+JavaScript / TypeScript
+HTML/CSS
+Responsive Design
+UI Development
+API Integration
+Performance Optimization
+Git

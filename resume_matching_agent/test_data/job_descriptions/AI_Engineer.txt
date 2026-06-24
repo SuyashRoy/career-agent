@@ -1,0 +1,37 @@
+AI Engineer
+
+Job Summary:
+We are seeking an AI Engineer to build and deploy AI-powered applications using large language models (LLMs), generative AI technologies, and advanced machine learning systems. 
+The role involves integrating AI capabilities into products and business workflows while ensuring scalability, reliability, and security.
+
+Key Responsibilities:
+Design and develop AI-powered applications and intelligent agents.
+Build solutions using LLMs, Retrieval-Augmented Generation (RAG), vector databases, and AI orchestration frameworks.
+Integrate AI services with internal and external systems through APIs.
+Fine-tune, evaluate, and optimize AI models.
+Implement prompt engineering strategies and AI workflows.
+Monitor AI application performance, safety, and cost efficiency.
+Collaborate with Product, Engineering, and Data teams to deliver AI solutions.
+
+Required Qualifications:
+Bachelor's or Master's degree in Computer Science, AI, Machine Learning, or related field.
+Experience building AI or machine learning applications.
+Strong proficiency in Python.
+Experience with LLMs and generative AI technologies.
+Knowledge of vector databases and semantic search.
+Experience deploying applications in cloud environments.
+
+Preferred Qualifications:
+Experience with LangChain, LlamaIndex, or similar frameworks.
+Experience with fine-tuning and model evaluation.
+Familiarity with AI governance and responsible AI practices.
+
+Key Skills:
+Generative AI
+LLMs
+RAG
+Prompt Engineering
+Python
+API Development
+Vector Databases
+Cloud Platforms
