@@ -13,10 +13,10 @@ if str(_REPO_ROOT) not in sys.path:
 
 from langgraph.graph import StateGraph, END
 
-from agents.career_page_finder import find_career_page, _google_search_career_page
-from agents.job_extractor import extract_job_url
-from agents.linkedin_extractor import extract_company_info
-from models.schemas import JobSourceOutput, JobSourceState
+from .agents.career_page_finder import find_career_page, _google_search_career_page
+from .agents.job_extractor import extract_job_url
+from .agents.linkedin_extractor import extract_company_info
+from .models.schemas import JobSourceOutput, JobSourceState
 
 
 # ── LangGraph nodes ────────────────────────────────────────────────────────────
